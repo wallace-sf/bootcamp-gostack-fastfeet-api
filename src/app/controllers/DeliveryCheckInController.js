@@ -1,3 +1,5 @@
+import { setHours, isBefore, isAfter } from 'date-fns';
+
 import Delivery from '../models/Delivery';
 
 class DeliveryCheckInController {
@@ -13,10 +15,31 @@ class DeliveryCheckInController {
     }
 
     /**
-     * Check if time is between 08 and 18h
+     * Check if time is between 8 am and 18 pm
      */
 
-    return res.json({});
+    const now = new Date();
+    const [start, end] = [setHours(now, 8), setHours(now, 18)];
+
+    const isInInterval = isBefore(now, end) && isAfter(now, start);
+
+    if (!isInInterval) {
+      return res.status(400).json({
+        error: 'The delivery receipt time must be between 8 am and 7 pm ',
+      });
+    }
+
+    /**
+     * Check if check in is done
+     */
+
+    if (deliveryExists.start_date) {
+      return res.status(400).json({ error: 'You have already checked in' });
+    }
+
+    await deliveryExists.update({ start_date: now });
+
+    return res.json(deliveryExists);
   }
 }
 
