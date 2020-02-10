@@ -1,0 +1,14 @@
+<strong>Olá, {{ deliveryman }}</strong>
+<p>Há uma nova encomenda. Segue os dados abaixo:</p>
+<p>
+  <strong>Produto: </strong> {{ product }} <br />
+  <strong>Destinatário: </strong> {{ recipient.name }} <br />
+  <strong>Endereço: </strong> {{ recipient.street }}, {{ recipient.number }}
+    - {{ recipient.city }}/{{ recipient.state }} <br />
+  <strong>Complemento: </strong> {{ recipient.complement }} <br />
+  <strong>CEP: </strong> {{ recipient.zip_code }} <br />
+  <br>
+  <small>
+    Horário de retirada das 8 às 18h.
+  </small>
+</p>
