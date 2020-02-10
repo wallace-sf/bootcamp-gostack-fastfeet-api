@@ -6,7 +6,7 @@ import File from '../models/File';
 class DeliverymanController {
   async index(req, res) {
     const deliverymen = await Deliveryman.findAll({
-      attributes: ['name', 'email', 'avatar_id'],
+      attributes: ['id', 'name', 'email', 'avatar_id'],
       include: [
         {
           model: File,
