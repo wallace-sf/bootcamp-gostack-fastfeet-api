@@ -1,4 +1,4 @@
-import { setHours, isBefore, isAfter } from 'date-fns';
+import { setHours, isBefore, isAfter, setMinutes, setSeconds } from 'date-fns';
 
 import Delivery from '../models/Delivery';
 
@@ -18,14 +18,17 @@ class DeliveryCheckInController {
      * Check if time is between 8 am and 18 pm
      */
 
-    const now = new Date();
-    const [start, end] = [setHours(now, 8), setHours(now, 18)];
+    const now = new Date(); // Schedule in UTC
+    const [start, end] = [
+      setSeconds(setMinutes(setHours(now, 9), 0), 0),
+      setSeconds(setMinutes(setHours(now, 19), 0), 0),
+    ]; // UTC Adjustment
 
     const isInInterval = isBefore(now, end) && isAfter(now, start);
 
     if (!isInInterval) {
       return res.status(400).json({
-        error: 'The delivery receipt time must be between 8 am and 7 pm ',
+        error: 'The delivery receipt time must be between 8 am and 6 pm ',
       });
     }
 
