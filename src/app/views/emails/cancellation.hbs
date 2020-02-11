@@ -1,0 +1,15 @@
+<strong>Olá, {{ deliveryman.name }}</strong>
+<p>Há uma nova encomenda cancelada. Segue os dados abaixo:</p>
+<p>
+  <strong>Id: </strong> {{ id }} <br />
+  <strong>Produto: </strong> {{ product }} <br />
+  <strong>Destinatário: </strong> {{ recipient.name }} <br />
+  <strong>Endereço: </strong> {{ recipient.street }}, {{ recipient.number }}
+  - {{ recipient.city }}/{{ recipient.state }} <br />
+  <strong>Complemento: </strong> {{ recipient.complement }} <br />
+  <strong>CEP: </strong> {{ recipient.zip_code }} <br />
+  <br>
+  <small>
+    Entre em contato com a empresa para mais detalhes.
+  </small>
+</p>

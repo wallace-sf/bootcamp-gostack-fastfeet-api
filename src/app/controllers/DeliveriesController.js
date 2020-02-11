@@ -16,7 +16,7 @@ class DeliveriesController {
     }
 
     const { id: deliveryman_id } = deliverymanExists;
-    const { delivered } = req.query;
+    const { delivered, page = 1 } = req.query;
 
     const deliveries = await Delivery.findAll({
       where: {
@@ -26,6 +26,8 @@ class DeliveriesController {
         },
         canceled_at: null,
       },
+      limit: 20,
+      offset: (page - 1) * 20,
     });
 
     return res.json(deliveries);

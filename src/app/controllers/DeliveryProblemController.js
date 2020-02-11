@@ -1,17 +1,33 @@
 import * as Yup from 'yup';
+import Sequelize, { Op } from 'sequelize';
 
 import DeliveryProblem from '../models/DeliveryProblems';
 import Delivery from '../models/Delivery';
+import Deliveryman from '../models/Deliveryman';
+import Recipient from '../models/Recipient';
+import CancellationMail from '../jobs/CancellationMail';
+import Queue from '../../lib/Queue';
 
 class DeliveryProblemController {
   async index(req, res) {
-    const id = await DeliveryProblem.findAll({
-      where: { delivery_id: req.params.id },
-      attributes: ['id'],
+    const { page = 1 } = req.query;
+
+    const deliveriesProblem = await DeliveryProblem.findAll({
+      attributes: [
+        [Sequelize.fn('DISTINCT', Sequelize.col('delivery_id')), 'delivery_id'],
+      ],
     });
 
+    const deliveriesProblemIDs = deliveriesProblem.map(
+      delivery => delivery.delivery_id
+    );
+
     const deliveries = await Delivery.findAll({
-      where: { id },
+      where: {
+        id: {
+          [Op.in]: deliveriesProblemIDs,
+        },
+      },
       attributes: [
         'id',
         'product',
@@ -22,23 +38,8 @@ class DeliveryProblemController {
         'end_date',
         'canceled_at',
       ],
-    });
-
-    return res.json(deliveries);
-  }
-
-  async show(req, res) {
-    const { deliveryId: delivery_id } = req.params;
-
-    const deliveryExists = await Delivery.findByPk(delivery_id);
-
-    if (!deliveryExists) {
-      return res.status(400).json({ error: 'Delivery id does not exist' });
-    }
-
-    const deliveries = await DeliveryProblem.findAll({
-      where: { delivery_id },
-      attributes: ['id', 'description', 'delivery_id'],
+      limit: 20,
+      offset: (page - 1) * 20,
     });
 
     return res.json(deliveries);
@@ -69,6 +70,52 @@ class DeliveryProblemController {
     const { id } = await DeliveryProblem.create({ delivery_id, description });
 
     return res.json({ id, delivery_id, description });
+  }
+
+  async delete(req, res) {
+    const { deliveryProblemId } = req.params;
+
+    const deliveryProblemExists = await DeliveryProblem.findByPk(
+      deliveryProblemId
+    );
+
+    if (!deliveryProblemExists) {
+      return res
+        .status(400)
+        .json({ error: 'Delivery problem id does not exist' });
+    }
+
+    const deliveryId = deliveryProblemExists.delivery_id;
+
+    const delivery = await Delivery.findByPk(deliveryId, {
+      include: [
+        {
+          model: Deliveryman,
+          as: 'deliveryman',
+          attributes: ['name', 'email'],
+        },
+        {
+          model: Recipient,
+          as: 'recipient',
+        },
+      ],
+    });
+
+    delivery.canceled_at = new Date();
+    delivery.save();
+
+    const { id, product, recipient, deliveryman } = delivery;
+
+    await Queue.add(CancellationMail.key, {
+      problem: {
+        id,
+        product,
+        recipient,
+        deliveryman,
+      },
+    });
+
+    return res.send();
   }
 }
 

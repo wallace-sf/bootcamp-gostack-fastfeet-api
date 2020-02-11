@@ -9,6 +9,8 @@ import DeliveryMail from '../jobs/DeliveryMail';
 
 class DeliveryController {
   async index(req, res) {
+    const { page = 1 } = req.query;
+
     const deliveries = await Delivery.findAll({
       attributes: [
         'id',
@@ -20,6 +22,8 @@ class DeliveryController {
         'end_date',
         'canceled_at',
       ],
+      limit: 20,
+      offset: (page - 1) * 20,
       include: [
         {
           model: Recipient,
