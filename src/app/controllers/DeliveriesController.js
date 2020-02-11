@@ -1,3 +1,5 @@
+import { Op } from 'sequelize';
+
 import Delivery from '../models/Delivery';
 import Deliveryman from '../models/Deliveryman';
 
@@ -13,10 +15,17 @@ class DeliveriesController {
       return res.status(400).json({ error: 'Deliveryman id does not exist' });
     }
 
-    const { deliveryman_id } = deliverymanExists;
+    const { id: deliveryman_id } = deliverymanExists;
+    const { delivered } = req.query;
 
     const deliveries = await Delivery.findAll({
-      where: { deliveryman_id, end_date: null, canceled_at: null },
+      where: {
+        deliveryman_id,
+        end_date: {
+          [Op[delivered === 'true' ? 'ne' : 'eq']]: null,
+        },
+        canceled_at: null,
+      },
     });
 
     return res.json(deliveries);
