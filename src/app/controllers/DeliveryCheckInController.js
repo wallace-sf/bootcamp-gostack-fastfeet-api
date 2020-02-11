@@ -1,9 +1,28 @@
-import { setHours, isBefore, isAfter, setMinutes, setSeconds } from 'date-fns';
+import {
+  setHours,
+  isBefore,
+  isAfter,
+  setMinutes,
+  setSeconds,
+  startOfDay,
+  endOfDay,
+} from 'date-fns';
+import { Op } from 'sequelize';
+import * as Yup from 'yup';
 
 import Delivery from '../models/Delivery';
+import File from '../models/File';
 
 class DeliveryCheckInController {
   async store(req, res) {
+    const schema = Yup.object().shape({
+      signature_id: Yup.number().required(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Validations fails' });
+    }
+
     /**
      * Check if delivery exists
      */
@@ -15,10 +34,48 @@ class DeliveryCheckInController {
     }
 
     /**
+     * Check if check in is done
+     */
+
+    if (deliveryExists.start_date) {
+      return res.status(400).json({ error: 'You have already checked in' });
+    }
+
+    /**
+     * Check if there are already 5 deliveries
+     */
+
+    const { deliveryman_id } = deliveryExists;
+    const now = new Date(); // Schedule in UTC
+
+    const deliveries = await Delivery.findAll({
+      where: {
+        deliveryman_id,
+        canceled_at: null,
+        start_date: {
+          [Op.between]: [startOfDay(now), endOfDay(now)],
+        },
+      },
+    });
+
+    if (deliveries.length >= 5) {
+      return res.status(400).json({ error: 'You already have 5 check ins' });
+    }
+
+    /**
+     * Check if signature_id exists
+     */
+
+    const file = await File.findByPk(req.body.signature_id);
+
+    if (!file) {
+      return res.status(400).json({ error: 'Signature id does not exist' });
+    }
+
+    /**
      * Check if time is between 8 am and 18 pm
      */
 
-    const now = new Date(); // Schedule in UTC
     const [start, end] = [
       setSeconds(setMinutes(setHours(now, 8), 0), 0),
       setSeconds(setMinutes(setHours(now, 18), 0), 0),
@@ -30,14 +87,6 @@ class DeliveryCheckInController {
       return res.status(400).json({
         error: 'The delivery receipt time must be between 8 am and 6 pm ',
       });
-    }
-
-    /**
-     * Check if check in is done
-     */
-
-    if (deliveryExists.start_date) {
-      return res.status(400).json({ error: 'You have already checked in' });
     }
 
     await deliveryExists.update({ start_date: now });
