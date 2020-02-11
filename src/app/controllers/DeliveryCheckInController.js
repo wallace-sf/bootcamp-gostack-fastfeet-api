@@ -20,8 +20,8 @@ class DeliveryCheckInController {
 
     const now = new Date(); // Schedule in UTC
     const [start, end] = [
-      setSeconds(setMinutes(setHours(now, 9), 0), 0),
-      setSeconds(setMinutes(setHours(now, 19), 0), 0),
+      setSeconds(setMinutes(setHours(now, 8), 0), 0),
+      setSeconds(setMinutes(setHours(now, 18), 0), 0),
     ]; // UTC Adjustment
 
     const isInInterval = isBefore(now, end) && isAfter(now, start);
