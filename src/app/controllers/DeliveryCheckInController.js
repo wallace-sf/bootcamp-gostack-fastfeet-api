@@ -8,21 +8,10 @@ import {
   endOfDay,
 } from 'date-fns';
 import { Op } from 'sequelize';
-import * as Yup from 'yup';
-
 import Delivery from '../models/Delivery';
-import File from '../models/File';
 
 class DeliveryCheckInController {
   async store(req, res) {
-    const schema = Yup.object().shape({
-      signature_id: Yup.number().required(),
-    });
-
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validations fails' });
-    }
-
     /**
      * Check if delivery exists
      */
@@ -60,16 +49,6 @@ class DeliveryCheckInController {
 
     if (deliveries.length >= 5) {
       return res.status(400).json({ error: 'You already have 5 check ins' });
-    }
-
-    /**
-     * Check if signature_id exists
-     */
-
-    const file = await File.findByPk(req.body.signature_id);
-
-    if (!file) {
-      return res.status(400).json({ error: 'Signature id does not exist' });
     }
 
     /**
