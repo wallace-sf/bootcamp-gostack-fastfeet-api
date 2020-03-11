@@ -14,29 +14,23 @@
 O bootcamp da Rocketseat é composto por fases e módulos. Cada módulo é realizado um desafio para fixação do conteúdo apresentado. Para 
 ler o desafio completo [clique aqui](https://github.com/Rocketseat/bootcamp-gostack-desafio-03).
 
-## Install
-After accessing the project's root folder from the terminal, install the dependencies using: 
+Crie um container no Docker utilizando uma imagem do PostgreSQL. Para baixar o programa [clique aqui.](https://www.docker.com/products/docker-desktop)
 ```sh
-# npm
-npm i
-# yarn
-yarn
+$ docker run --name database -e POSTGRES_PASSWORD=docker -p 5432:5432 -d postgres
 ```
-Create a Docker container with PostgreSQL image:
+Crie outro container utilizando uma imagem do MongoDB:
 ```sh
-docker run --name database -e POSTGRES_PASSWORD=docker -p 5432:5432 -d postgres
-```
-Create a Docker container with Redis image:
-```sh
-docker run --name redisfeet -p 6379:6379 -d -t redis:alpine
+$ docker run --name mongobarber -d -t mongo
 ```
 
 ## Scripts
 ```sh
-# Start in development mode with nodemon
-yarn dev or npm run dev
-# Start debug in development mode with nodemon
-yarn dev:debug or npm run dev:debug
+# Inicie a API em modo de desenvolvimento
+$ yarn dev
+$ npm run dev
+# Faça o debug da API
+$ yarn dev:debug
+$ npm run dev:debug
 # Start processing queues with Bee Queue
 yarn queue or npm run queue
 ```
