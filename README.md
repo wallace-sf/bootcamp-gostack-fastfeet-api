@@ -11,8 +11,7 @@
 </p>
 
 ## :rocket: Sobre o Bootcamp
-O bootcamp da Rocketseat é composto por fases e módulos. Cada módulo é realizado um desafio para fixação do conteúdo apresentado. Para 
-ler o desafio completo [clique aqui](https://github.com/Rocketseat/bootcamp-gostack-desafio-03).
+O bootcamp da Rocketseat é composto por fases e módulos. Cada módulo é realizado um desafio para fixação do conteúdo apresentado.
 
 Crie um container no Docker utilizando uma imagem do PostgreSQL. Para baixar o programa [clique aqui.](https://www.docker.com/products/docker-desktop)
 ```sh
