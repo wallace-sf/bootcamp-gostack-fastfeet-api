@@ -28,9 +28,11 @@ $ docker run --name mongobarber -d -t mongo
 # Inicie a API em modo de desenvolvimento
 $ yarn dev
 $ npm run dev
+
 # Faça o debug da API
 $ yarn dev:debug
 $ npm run dev:debug
+
 # Start processing queues with Bee Queue
 yarn queue or npm run queue
 ```
