@@ -3,6 +3,17 @@ import * as Yup from 'yup';
 import Recipient from '../models/Recipient';
 
 class RecipientsController {
+  async index(req, res) {
+    const { page = 1 } = req.query;
+
+    const recipients = await Recipient.findAll({
+      limit: 20,
+      offset: (page - 1) * 20,
+    });
+
+    return res.json(recipients);
+  }
+
   async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
@@ -85,6 +96,18 @@ class RecipientsController {
       city,
       zip_code,
     });
+  }
+
+  async delete(req, res) {
+    const recipientExists = await Recipient.findByPk(req.params.id);
+
+    // if (!recipientExists) {
+    //   return res.status(400).json({ error: 'Recipient id does not exist' });
+    // }
+
+    await recipientExists.destroy();
+
+    return res.json(recipientExists);
   }
 }
 
