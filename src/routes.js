@@ -12,7 +12,7 @@ import DeliverymanController from './app/controllers/DeliverymanController';
 import DeliveryController from './app/controllers/DeliveryController';
 import DeliveryCheckInController from './app/controllers/DeliveryCheckInController';
 import DeliveryCheckOutController from './app/controllers/DeliveryCheckOutController';
-import DeliveriesByDeliverymanController from './app/controllers/DeliveriesByDeliverymanControllerController';
+import DeliveriesController from './app/controllers/DeliveriesController';
 import DeliveryProblemController from './app/controllers/DeliveryProblemController';
 import DeliveryProblemsByIDController from './app/controllers/DeliveryProblemsByIDController';
 
@@ -22,10 +22,7 @@ const upload = multer(multerConfig);
 routes.post('/users', UserController.store);
 routes.post('/sessions', SessionsController.store);
 
-routes.get(
-  '/deliverymen/:id/deliveries',
-  DeliveriesByDeliverymanController.index
-);
+routes.get('/deliverymen/:id/deliveries', DeliveriesController.index);
 
 routes.post('/delivery/:deliveryId/checkIn', DeliveryCheckInController.store);
 routes.post('/delivery/:deliveryId/checkOut', DeliveryCheckOutController.store);
@@ -44,7 +41,6 @@ routes.put('/deliverymen/:id', DeliverymanController.update);
 routes.delete('/deliverymen/:id', DeliverymanController.delete);
 
 routes.get('/delivery', DeliveryController.index);
-routes.get('/delivery/problems', DeliveryProblemController.index);
 routes.get(
   '/delivery/:deliveryId/problems',
   DeliveryProblemsByIDController.index
@@ -53,6 +49,7 @@ routes.post('/delivery', DeliveryController.store);
 routes.put('/delivery/:id', DeliveryController.update);
 routes.delete('/delivery/:id', DeliveryController.delete);
 
+routes.get('/problems', DeliveryProblemController.index);
 routes.delete(
   '/problem/:deliveryProblemId/cancel-delivery',
   DeliveryProblemController.delete

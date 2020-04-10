@@ -13,36 +13,11 @@ class DeliveryProblemController {
     const { page = 1 } = req.query;
 
     const deliveriesProblem = await DeliveryProblem.findAll({
-      attributes: [
-        [Sequelize.fn('DISTINCT', Sequelize.col('delivery_id')), 'delivery_id'],
-      ],
-    });
-
-    const deliveriesProblemIDs = deliveriesProblem.map(
-      delivery => delivery.delivery_id
-    );
-
-    const deliveries = await Delivery.findAll({
-      where: {
-        id: {
-          [Op.in]: deliveriesProblemIDs,
-        },
-      },
-      attributes: [
-        'id',
-        'product',
-        'recipient_id',
-        'deliveryman_id',
-        'signature_id',
-        'start_date',
-        'end_date',
-        'canceled_at',
-      ],
       limit: 20,
       offset: (page - 1) * 20,
     });
 
-    return res.json(deliveries);
+    return res.json(deliveriesProblem);
   }
 
   async store(req, res) {
