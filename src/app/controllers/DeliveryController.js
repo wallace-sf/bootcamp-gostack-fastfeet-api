@@ -21,6 +21,7 @@ class DeliveryController {
         'start_date',
         'end_date',
         'canceled_at',
+        'status',
       ],
       limit: 20,
       offset: (page - 1) * 20,

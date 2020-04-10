@@ -8,6 +8,7 @@ import {
   endOfDay,
 } from 'date-fns';
 import { Op } from 'sequelize';
+
 import Delivery from '../models/Delivery';
 
 class DeliveryCheckInController {
@@ -57,7 +58,7 @@ class DeliveryCheckInController {
 
     const [start, end] = [
       setSeconds(setMinutes(setHours(now, 8), 0), 0),
-      setSeconds(setMinutes(setHours(now, 18), 0), 0),
+      setSeconds(setMinutes(setHours(now, 22), 0), 0),
     ]; // UTC Adjustment
 
     const isInInterval = isBefore(now, end) && isAfter(now, start);

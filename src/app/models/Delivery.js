@@ -8,11 +8,34 @@ class Delivery extends Model {
         canceled_at: Sequelize.DATE,
         start_date: Sequelize.DATE,
         end_date: Sequelize.DATE,
+        status: Sequelize.STRING,
       },
       {
         sequelize,
       }
     );
+
+    this.addHook('beforeSave', async delivery => {
+      delivery.status = 'pending';
+    });
+
+    this.addHook('beforeUpdate', async delivery => {
+      const { canceled_at, start_date, end_date } = delivery;
+
+      if (canceled_at) {
+        delivery.status = 'canceled';
+        return;
+      }
+
+      if (start_date) {
+        delivery.status = 'checkedIn';
+        return;
+      }
+
+      if (end_date) {
+        delivery.status = 'delivered';
+      }
+    });
 
     return this;
   }
