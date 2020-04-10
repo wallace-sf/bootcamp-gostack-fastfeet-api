@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 
 import Recipient from '../models/Recipient';
+import Delivery from '../models/Delivery';
 
 class RecipientsController {
   async index(req, res) {
@@ -101,13 +102,25 @@ class RecipientsController {
   async delete(req, res) {
     const recipientExists = await Recipient.findByPk(req.params.id);
 
-    // if (!recipientExists) {
-    //   return res.status(400).json({ error: 'Recipient id does not exist' });
-    // }
+    if (!recipientExists) {
+      return res.status(400).json({ error: 'Recipient id does not exist' });
+    }
+
+    const deliveries = await Delivery.findOne({
+      where: {
+        recipient_id: recipientExists.id,
+      },
+    });
+
+    if (deliveries) {
+      return res
+        .status(400)
+        .json({ error: 'There are deliveries registered for this recipient' });
+    }
 
     await recipientExists.destroy();
 
-    return res.json(recipientExists);
+    return res.send();
   }
 }
 

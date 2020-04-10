@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 
 import Deliveryman from '../models/Deliveryman';
+import Delivery from '../models/Delivery';
 import File from '../models/File';
 
 class DeliverymanController {
@@ -82,6 +83,18 @@ class DeliverymanController {
 
     if (!deliverymanExists) {
       return res.status(400).json({ error: 'Deliveryman id does not exist' });
+    }
+
+    const deliveries = await Delivery.findOne({
+      where: {
+        deliveryman_id: deliverymanExists.id,
+      },
+    });
+
+    if (deliveries) {
+      return res.status(400).json({
+        error: 'There are deliveries registered for this delivery man',
+      });
     }
 
     await deliverymanExists.destroy();
