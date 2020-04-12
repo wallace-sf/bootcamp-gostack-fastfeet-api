@@ -27,13 +27,13 @@ class Delivery extends Model {
         return;
       }
 
-      if (start_date) {
-        delivery.status = 'checkedIn';
+      if (end_date) {
+        delivery.status = 'delivered';
         return;
       }
 
-      if (end_date) {
-        delivery.status = 'delivered';
+      if (start_date) {
+        delivery.status = 'checkedIn';
       }
     });
 

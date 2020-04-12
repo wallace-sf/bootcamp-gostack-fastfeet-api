@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import * as Yup from 'yup';
 
 import Delivery from '../models/Delivery';
@@ -9,9 +10,14 @@ import DeliveryMail from '../jobs/DeliveryMail';
 
 class DeliveryController {
   async index(req, res) {
-    const { page = 1 } = req.query;
+    const { page = 1, q } = req.query;
 
     const deliveries = await Delivery.findAll({
+      where: {
+        product: {
+          [Op.iLike]: `%${q || ''}%`,
+        },
+      },
       attributes: [
         'id',
         'product',
