@@ -13,6 +13,7 @@ class DeliveryProblemController {
     const { page = 1 } = req.query;
 
     const deliveriesProblem = await DeliveryProblem.findAll({
+      order: [['id', 'ASC']],
       limit: 20,
       offset: (page - 1) * 20,
     });

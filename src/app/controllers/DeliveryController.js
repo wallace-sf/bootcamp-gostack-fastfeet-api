@@ -13,6 +13,7 @@ class DeliveryController {
     const { page = 1, q } = req.query;
 
     const deliveries = await Delivery.findAll({
+      order: [['id', 'ASC']],
       where: {
         product: {
           [Op.iLike]: `%${q || ''}%`,

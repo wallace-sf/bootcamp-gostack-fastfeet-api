@@ -9,6 +9,8 @@
     "queue": "nodemon src/queue.js"
   },
   "dependencies": {
+    "@unform/core": "^2.1.3",
+    "@unform/web": "^2.1.3",
     "bcryptjs": "^2.4.3",
     "bee-queue": "^1.2.3",
     "cors": "^2.8.5",

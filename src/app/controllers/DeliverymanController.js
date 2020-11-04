@@ -10,6 +10,7 @@ class DeliverymanController {
     const { page = 1, q } = req.query;
 
     const deliverymen = await Deliveryman.findAll({
+      order: [['id', 'ASC']],
       where: {
         name: {
           [Op.iLike]: `%${q || ''}%`,

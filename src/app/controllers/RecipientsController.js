@@ -9,6 +9,7 @@ class RecipientsController {
     const { page = 1, q } = req.query;
 
     const recipients = await Recipient.findAll({
+      order: [['id', 'ASC']],
       where: {
         name: {
           [Op.iLike]: `%${q || ''}%`,
